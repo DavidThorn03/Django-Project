@@ -1,0 +1,9 @@
+{% if hotels %}
+    <ul>
+    {% for hotel in hotels %}
+        <li><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hotels are available.</p>
+{% endif %}

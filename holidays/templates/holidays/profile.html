@@ -1,0 +1,16 @@
+<h1>{{ client.user.user_name }}</h1>
+<p>Email: {{ client.user.email }}</p>
+<p>Phone Number: {{ client.user.mobile }}</p>
+<p>Address: {{ client.address }}</p>
+<ul>
+{% for booking in client.user.booking_set.all %}
+<li><a href="{% url 'holidays:hotel' booking.room.hotel.id %}">{{ booking.room.hotel.hotel_name }}</a>
+        <ul>
+            <li>{{booking.room.description}}</li>
+            <li>Price: {{booking.room.price}}</li>
+            <li>Check in: {{booking.check_in}}</li>
+            <li>Check out: {{booking.check_out}}</li>
+        </ul>
+    </li>
+{% endfor %}
+</ul>
