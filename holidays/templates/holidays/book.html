@@ -1,10 +1,9 @@
-<form action="{% url 'holidays:make_booking' room.id, user_id %}" method="post">
+<form action= "{% url 'holidays:make_booking' %}" method="post">
     {% csrf_token %}
     <fieldset>
         <legend><h1>{{ room.hotel.hotel_name  }} {{ room.description }}</h1></legend>
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
         <input type="hidden" name="room_id" value="{{ room.id }}">
-        <input type="hidden" name="user_id" value="{{ user_id }}">
         <label for="check_in">Check In:</label>
         <input type="date" name="check_in" id="check_in" required>
         <label for="check_out">Check Out:</label>

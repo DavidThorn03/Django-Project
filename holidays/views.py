@@ -1,47 +1,73 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
-from .models import Hotel
-from .models import Client
-from .models import Room
-
+from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff
 
 def index(request):
     hotels = Hotel.objects.all()
-    context = {'hotels': hotels}
+    user = request.COOKIES.get("user_name")
+    print(user)
+    context = {'hotels': hotels, "user": user}
     return render(request, 'holidays/index.html', context)
 
 def hotel(request, hotel_id):
     hotel = get_object_or_404(Hotel, pk=hotel_id)
     return render(request, 'holidays/hotel.html', {'hotel': hotel})
 
-def profile(request, client_id):
-    user = get_object_or_404(Client, pk=client_id)
+def profile(request):
+    user = request.COOKIES.get("user_id")
+    user = get_object_or_404(User, pk=user)
     return render(request, 'holidays/profile.html', {'client': user})
 
-def book(request, room_id, user_id):
+def book(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    return render(request, 'holidays/book.html', {'room': room, 'user_id': user_id})
+    user = request.COOKIES.get("user_id")
+    return render(request, 'holidays/book.html', {'room': room, 'user_id': user})
+    
+def make_booking(request):
+    check_in = request.POST["check_in"]
+    check_out = request.POST["check_out"]
+    user_id = request.COOKIES.get("user_id")
+    room_id = request.POST["room_id"]
+    new = Booking(user_id=user_id, room_id=room_id, check_in=check_in, check_out=check_out)
+    new.save()
+    return redirect("holidays:index")  
 
-def vote(request, room_id, user_id):
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST["choice"])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(
-            request,
-            "polls/detail.html",
-            {
-                "question": question,
-                "error_message": "You didn't select a choice.",
-            },
-        )
-    else:
-        selected_choice.votes = F("votes") + 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+def login(request):
+    return render(request, 'holidays/login.html')
+
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST["user_name"]
+        password = request.POST["password"]
+        try:
+            user = User.objects.get(user_name=username, password=password)
+                
+            response = redirect("holidays:index")
+            response.set_cookie('user_name', user.user_name, max_age=3600)  
+            response.set_cookie('user_id', user.id, max_age=3600)
+
+            if hasattr(user, 'client'):
+                response.set_cookie('user_type', Client, max_age=3600)
+
+            elif hasattr(user, 'webadmin'):
+                response.set_cookie('user_type', WebAdmin, max_age=3600)
+
+            elif hasattr(user, 'staff'):
+                response.set_cookie('user_type', Staff, max_age=3600)
+
+            return response
+
+        except User.DoesNotExist:
+            return render(request, 'holidays/login.html', {'error': 'Invalid credentials'})
+    
+    return render(request, 'holidays/login.html')
+
+def logout_user(request):
+    response = redirect("holidays:index")
+    response.delete_cookie('user_name')
+    response.delete_cookie('user_id')
+    response.delete_cookie('user_type')
+    return response

@@ -1,5 +1,6 @@
 {% if hotels %}
     <ul>
+    {% if user %}<h1>Welcome {{ user }}</h1>{% endif %}
     {% for hotel in hotels %}
         <li><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></li>
     {% endfor %}

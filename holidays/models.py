@@ -60,6 +60,7 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in = models.DateTimeField("check in date")
     check_out = models.DateTimeField("check out date")
+    approved = models.BooleanField(default=False)
     def __str__(self):
         return self.user.user_name + " " + self.room.description
 
@@ -78,6 +79,11 @@ Run python manage.py makemigrations to create migrations for those changes
 Run python manage.py migrate to apply those changes to the database
 
 
-
+For shell: py manage.py shell
 from holidays.models import Hotel, Room, User, Client, WebAdmin, Staff, Booking, Rating
+
+
+py manage.py startapp [name]
+
+py manage.py runserver
 """
