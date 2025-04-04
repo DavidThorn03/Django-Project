@@ -2,6 +2,8 @@
 <p>Email: {{ client.user.email }}</p>
 <p>Phone Number: {{ client.user.mobile }}</p>
 <p>Address: {{ client.address }}</p>
+<p>Age: {{ client.age }}</p>
+<p><a href="{% url 'holidays:logout_user' %}">Logout</a></p>
 {% if error %}  
 <p><strong>{{ error }}</strong></p>
 {% endif%}
