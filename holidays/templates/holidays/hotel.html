@@ -1,4 +1,6 @@
 <h1>{{ hotel.hotel_name }}</h1>
+<p>Rating = {{ hotel.get_rating }}</p>
+<a href="{% url 'holidays:rate' hotel.id 1 %}">1</a> <a href="{% url 'holidays:rate' hotel.id 2 %}">2</a> <a href="{% url 'holidays:rate' hotel.id 3 %}">3</a> <a href="{% url 'holidays:rate' hotel.id 4 %}">4</a> <a href="{% url 'holidays:rate' hotel.id 5 %}">5</a>
 <ul>
 {% for room in hotel.room_set.all %}
     <li><a href="{% url 'holidays:book' room.id %}">{{room.description}}   Price: {{room.price}}<a></li>

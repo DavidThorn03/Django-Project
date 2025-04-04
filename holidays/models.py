@@ -8,9 +8,14 @@ class Hotel(models.Model):
     location = models.CharField(max_length=200)
     contact = models.IntegerField(default=0)
     email = models.CharField(max_length=200)
-    #rating = models.IntegerField(default=0)
     def __str__(self):
         return self.hotel_name
+    def get_rating(self):
+        ratings = Rating.objects.filter(hotel=self)
+        if ratings.count() == 0:
+            return 0
+        else:
+            return round(sum([rating.rating for rating in ratings]) / ratings.count(), 1)
 
 
 class Room(models.Model):

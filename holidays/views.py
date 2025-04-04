@@ -3,7 +3,7 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
-from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff
+from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating
 
 def index(request):
     hotels = Hotel.objects.all()
@@ -31,24 +31,21 @@ def profile(request):
 def book(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     user = request.COOKIES.get("user_id")
+    
+    if request.method == "POST":
+        check_in = request.POST["check_in"]
+        check_out = request.POST["check_out"]
+        if check_in > check_out:
+            return Http404("Check-in date must be before check-out date.")
+
+        if is_Client(user):
+            new = Booking(user_id=user, room_id=room_id, check_in=check_in, check_out=check_out)
+            new.save()
+            return redirect("holidays:profile")  
+        
+        return redirect("holidays:login")
     if is_Client(user):
         return render(request, 'holidays/book.html', {'room': room, 'user_id': user})
-    
-    return redirect("holidays:login")
-    
-def make_booking(request):
-    check_in = request.POST["check_in"]
-    check_out = request.POST["check_out"]
-    if check_in > check_out:
-        return Http404("Check-in date must be before check-out date.")
-    
-    user_id = request.COOKIES.get("user_id")
-    room_id = request.POST["room_id"]
-
-    if is_Client(user_id):
-        new = Booking(user_id=user_id, room_id=room_id, check_in=check_in, check_out=check_out)
-        new.save()
-        return redirect("holidays:profile")  
     
     return redirect("holidays:login")
 
@@ -61,12 +58,26 @@ def cancel_booking(request, booking_id):
         booking.delete()
         return redirect("holidays:profile")
     
-    return Http404("You are not authorized to cancel this booking.")
+    return redirect("holidays:index")
+
+def rate(request, hotel_id, rating):
+    hotel = get_object_or_404(Hotel, pk=hotel_id)
+    user = request.COOKIES.get("user_id")
+    if not is_Client(user):
+        return redirect("holidays:login")
+        
+    try:
+        Rating.objects.update_or_create(
+            hotel_id = hotel.id,
+            user_id = user,
+            defaults = {'rating': int(rating)}
+        )
+        return redirect("holidays:hotel", hotel_id=hotel_id)
+    except Exception as e:
+        return redirect("holidays:index")
+    
 
 def login(request):
-    return render(request, 'holidays/login.html')
-
-def login_user(request):
     if request.method == "POST":
         username = request.POST["user_name"]
         password = request.POST["password"]
@@ -85,26 +96,26 @@ def login_user(request):
     return render(request, 'holidays/login.html')
 
 def register(request):
+    if request.method == "POST":
+        username = request.POST["user_name"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        mobile = request.POST["mobile"]
+        age = request.POST["age"]
+        address = request.POST["address"]
+        
+        try:
+            if User.objects.filter(email=email).exists():
+                raise Exception("Username already exists.")
+            user = User.objects.create(user_name=username, email=email, password=password, mobile=mobile)
+            user.save()
+            client = Client.objects.create(user=user, age=age, address=address)
+            client.save()
+            return redirect("holidays:login")
+        except Exception as e:
+            return render(request, 'holidays/register.html')
+        
     return render(request, 'holidays/register.html')
-
-def register_user(request):
-    username = request.POST["user_name"]
-    email = request.POST["email"]
-    password = request.POST["password"]
-    mobile = request.POST["mobile"]
-    age = request.POST["age"]
-    address = request.POST["address"]
-    
-    try:
-        if User.objects.filter(email=email).exists():
-            raise Exception("Username already exists.")
-        user = User.objects.create(user_name=username, email=email, password=password, mobile=mobile)
-        user.save()
-        client = Client.objects.create(user=user, age=age, address=address)
-        client.save()
-        return redirect("holidays:login")
-    except Exception as e:
-        return render(request, 'holidays/register.html')
 
 def logout_user(request):
     response = redirect("holidays:index")

@@ -1,4 +1,4 @@
-<form action= "{% url 'holidays:make_booking' %}" method="post">
+<form action= "{% url 'holidays:book' room.id %}" method="post">
     {% csrf_token %}
     <fieldset>
         <legend><h1>{{ room.hotel.hotel_name  }} {{ room.description }}</h1></legend>
