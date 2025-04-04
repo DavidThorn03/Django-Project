@@ -2,6 +2,10 @@
 <p>Email: {{ client.user.email }}</p>
 <p>Phone Number: {{ client.user.mobile }}</p>
 <p>Address: {{ client.address }}</p>
+{% if error %}  
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+{% if client.user.booking_set.all %}
 <ul>
 {% for booking in client.user.booking_set.all %}
 <li><a href="{% url 'holidays:hotel' booking.room.hotel.id %}">{{ booking.room.hotel.hotel_name }}</a>
@@ -10,7 +14,12 @@
             <li>Price: {{booking.room.price}}</li>
             <li>Check in: {{booking.check_in}}</li>
             <li>Check out: {{booking.check_out}}</li>
+            <li>Booking {% if not booking.approved %}not yet {%endif%}approved</li>
+            <li><a href="{% url 'holidays:cancel_booking' booking.id %}">Cancel Booking</a></li>
         </ul>
     </li>
 {% endfor %}
 </ul>
+{% else %}
+<p>You have no bookings.</p>
+{% endif %}

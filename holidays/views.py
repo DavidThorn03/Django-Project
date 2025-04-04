@@ -18,8 +18,14 @@ def hotel(request, hotel_id):
 
 def profile(request):
     user = request.COOKIES.get("user_id")
-    user = get_object_or_404(User, pk=user)
-    return render(request, 'holidays/profile.html', {'client': user})
+    if user is None:
+        return redirect("holidays:login")
+    try:
+        user = get_object_or_404(Client, pk=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    return render(request, 'holidays/profile.html', {'client': user, 'error': error})
 
 def book(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
@@ -29,14 +35,29 @@ def book(request, room_id):
 def make_booking(request):
     check_in = request.POST["check_in"]
     check_out = request.POST["check_out"]
+    if check_in > check_out:
+        return Http404("Check-in date must be before check-out date.")
+
+    
     user_id = request.COOKIES.get("user_id")
     room_id = request.POST["room_id"]
     new = Booking(user_id=user_id, room_id=room_id, check_in=check_in, check_out=check_out)
     new.save()
     return redirect("holidays:index")  
 
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    elif int(user) == booking.user_id:
+        booking.delete()
+        return redirect("holidays:profile")
+    
+    return Http404("You are not authorized to cancel this booking.")
+
 def login(request):
-    return render(request, 'holidays/login.html')
+    return render(request, 'holidays/profile.html')
 
 def login_user(request):
     if request.method == "POST":

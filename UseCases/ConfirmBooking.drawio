@@ -1,28 +1,28 @@
 <mxfile host="65bd71144e">
     <diagram id="KFu2Jjx0fvDgMEuhWSRL" name="Page-1">
-        <mxGraphModel dx="816" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1124" dy="719" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="6" value="Controller" style="shape=rect;html=1;verticalAlign=top;fontStyle=1;whiteSpace=wrap;align=center;" parent="1" vertex="1">
                     <mxGeometry x="220" y="350" width="310" height="420" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2" target="18">
+                <mxCell id="17" style="edgeStyle=none;html=1;" parent="1" source="2" target="18" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="170" y="590" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="19" value="Select confirm booking" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="17">
+                <mxCell id="19" value="Select confirm booking" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="17" vertex="1" connectable="0">
                     <mxGeometry x="0.1391" y="3" relative="1" as="geometry">
                         <mxPoint x="-7" y="3" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="22" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2" target="23">
+                <mxCell id="22" style="edgeStyle=none;html=1;" parent="1" source="2" target="23" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="160" y="690" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="24" value="Select deny booking" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="22">
+                <mxCell id="24" value="Select deny booking" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="22" vertex="1" connectable="0">
                     <mxGeometry x="-0.0445" y="-1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
@@ -31,60 +31,60 @@
                     <mxGeometry x="50" y="555" width="30" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="7" value="Model" style="shape=rect;html=1;verticalAlign=top;fontStyle=1;whiteSpace=wrap;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="590" y="370" width="210" height="320" as="geometry"/>
+                    <mxGeometry x="590" y="410" width="210" height="320" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" style="edgeStyle=none;html=1;" edge="1" parent="1" source="9" target="10">
+                <mxCell id="13" style="edgeStyle=none;html=1;" parent="1" source="9" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="9" value="Get Unconfirmed bookings" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="250" y="380" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" style="edgeStyle=none;html=1;" edge="1" parent="1" source="10" target="15">
+                <mxCell id="14" style="edgeStyle=none;html=1;" parent="1" source="10" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="460" y="530" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="10" value="Bookings" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="625" y="420" width="140" height="70" as="geometry"/>
+                    <mxGeometry x="625" y="460" width="140" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" value="Conditions -&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Logged in as staff&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=rect;html=1;verticalAlign=top;fontStyle=1;whiteSpace=wrap;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="400" y="190" width="120" height="80" as="geometry"/>
+                    <mxGeometry x="630" y="290" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="16" style="edgeStyle=none;html=1;" edge="1" parent="1" source="15" target="2">
+                <mxCell id="16" style="edgeStyle=none;html=1;" parent="1" source="15" target="2" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="Display Bookings to confirm/deny" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="15" value="Display Bookings to confirm/deny" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="250" y="460" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="20" style="edgeStyle=none;html=1;" edge="1" parent="1" source="18" target="21">
+                <mxCell id="20" style="edgeStyle=none;html=1;" parent="1" source="18" target="21" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="480" y="690" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="29" style="edgeStyle=none;html=1;" edge="1" parent="1" source="18" target="27">
+                <mxCell id="29" style="edgeStyle=none;html=1;" parent="1" source="18" target="27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="18" value="Confirm booking" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="18" value="Confirm booking" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="250" y="550" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="21" value="Update booking as confirmed" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="625" y="515" width="140" height="70" as="geometry"/>
+                <mxCell id="21" value="Approved: true" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="625" y="555" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="25" style="edgeStyle=none;html=1;" edge="1" parent="1" source="23" target="26">
+                <mxCell id="25" style="edgeStyle=none;html=1;" parent="1" source="23" target="26" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="650" y="750" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="28" style="edgeStyle=none;html=1;" edge="1" parent="1" source="23" target="27">
+                <mxCell id="28" style="edgeStyle=none;html=1;" parent="1" source="23" target="27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="23" value="Deny Booking" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="23" value="Deny Booking" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="250" y="670" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="26" value="Delete booking" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="620" y="600" width="140" height="70" as="geometry"/>
+                <mxCell id="26" value="Remove Booking" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="640" width="140" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="27" value="Email user regarding status" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="27" value="Email user regarding status" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="380" y="600" width="140" height="70" as="geometry"/>
                 </mxCell>
             </root>
