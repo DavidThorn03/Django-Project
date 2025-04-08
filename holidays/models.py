@@ -1,4 +1,7 @@
+from datetime import date
 from django.db import models
+
+
 
 
 #Hotel models
@@ -25,6 +28,12 @@ class Room(models.Model):
     number = models.IntegerField(default=0)
     def __str__(self):
         return self.description
+    def unapproved_bookings(self):
+        bookings = Booking.objects.filter(room=self, approved=None)
+        return bookings
+    def num_unapproved(self):
+        bookings = Booking.objects.filter(room=self, approved=None)
+        return bookings.count()
 
 
 #User models
@@ -61,20 +70,51 @@ class Staff(models.Model):
 #Hotel user models
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    check_in = models.DateTimeField("check in date")
-    check_out = models.DateTimeField("check out date")
-    approved = models.BooleanField(default=False)
+    check_in = models.DateField("check in date")
+    check_out = models.DateField("check out date")
+    approved = models.ForeignKey(
+        Staff,
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.SET_NULL
+    )
     def __str__(self):
-        return self.user.user_name + " " + self.room.description
+        return self.user.user.user_name + " " + self.room.description
+    def valid_dates(self):
+        if self.check_in > self.check_out:
+            return False
+        if self.check_in < date.today():
+            return False
+        return True
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
     def __str__(self):
-        return self.user.user_name + " " + self.hotel.hotel_name + " " + str(self.rating)
+        return self.user.user.user_name + " " + self.hotel.hotel_name + " " + str(self.rating)
+    
+class Query(models.Model):
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    date = models.DateTimeField("query date")
+    subject = models.CharField(max_length=200)
+    query = models.CharField(max_length=500)
+    status = models.BooleanField(default=False)
+    def __str__(self):
+        return self.user.user.user_name + " " + self.hotel.hotel_name + " " + self.subject + " " + self.query
+    
+class Feedback(models.Model):
+    query = models.ForeignKey(Query, on_delete=models.CASCADE)
+    feedback = models.CharField(max_length=500)
+    staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    date = models.DateTimeField("feedback date")
+    def __str__(self):
+        return self.query.user.user.user_name + " " + self.query.hotel.hotel_name + " " + self.feedback
+
 
 """
 Change your models (in models.py).

@@ -1,0 +1,6 @@
+<h1>{{ hotel.hotel_name }}</h1>
+<ul>
+{% for room in hotel.room_set.all %}
+    <li>{{ room.description }} {% if room.num_unapproved > 0 %} <a href="{% url 'holidays:staff_room' room.id %}">{{ room.num_unapproved }} Unapproved Bookings</a> {% else %} No Unapproved Bookings {% endif %}</li>
+{% endfor %}
+</ul>

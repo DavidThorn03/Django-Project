@@ -7,9 +7,9 @@
 {% if error %}  
 <p><strong>{{ error }}</strong></p>
 {% endif%}
-{% if client.user.booking_set.all %}
+{% if client.booking_set.all %}
 <ul>
-{% for booking in client.user.booking_set.all %}
+{% for booking in client.booking_set.all %}
 <li><a href="{% url 'holidays:hotel' booking.room.hotel.id %}">{{ booking.room.hotel.hotel_name }}</a>
         <ul>
             <li>{{booking.room.description}}</li>
