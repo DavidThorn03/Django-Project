@@ -81,6 +81,7 @@ class Booking(models.Model):
         default=None,
         on_delete=models.SET_NULL
     )
+    payed = models.BooleanField(default=False)
     def __str__(self):
         return self.user.user.user_name + " " + self.room.description
     def valid_dates(self):

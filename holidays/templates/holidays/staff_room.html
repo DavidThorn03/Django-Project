@@ -1,1 +1,23 @@
-<p>hello</p>
+<h1>{{ room.hotel.hotel_name }}</h1>
+<p>{{ room.description }}</p>
+<p>Price: {{ room.price }}</p>
+{% if error %}  
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+{% if bookings %}
+<ul>
+{% for booking in bookings %}
+<li><a href="{% url 'holidays:view_client' user.id %}">{{ booking.user.user.user_name }}</a>
+        <ul>
+            <li>Check in: {{booking.check_in}}</li>
+            <li>Check out: {{booking.check_out}}</li>
+    
+            <li><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></li>    
+
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No unapproved bookings for this room</p>
+{% endif %}

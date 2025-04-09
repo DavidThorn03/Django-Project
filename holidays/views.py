@@ -90,6 +90,21 @@ def rate(request, hotel_id, rating):
     except Exception as e:
         return redirect("holidays:index")
     
+def pay_booking(request, booking_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    if request.method == "POST":
+        # propcess user info here if payment system is used 
+        booking = get_object_or_404(Booking, pk=booking_id)
+        booking.payed = True
+        booking.save()
+        return redirect("holidays:profile")
+    
+    else: 
+        return render(request, 'holidays/pay_booking.html', {'booking': booking_id})
+    
 
 
 # staff pages
@@ -131,6 +146,66 @@ def staff_room(request, room_id):
     
     
     return render(request, 'holidays/staff_room.html', {"room": room, "bookings": bookings})
+
+
+def approve_booking(request, booking_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        staff = get_object_or_404(Staff, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+        
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if booking.room.hotel_id != staff.hotel_id:
+        return redirect("holidays:staff_index")
+
+    booking.approved = staff
+    booking.save()
+    
+    return redirect("holidays:staff_room", room_id=booking.room.id)
+
+
+def remove_booking(request, booking_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        staff = get_object_or_404(Staff, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+        
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if booking.room.hotel_id != staff.hotel_id:
+        return redirect("holidays:staff_index")
+
+    booking.delete()
+    
+    return redirect("holidays:staff_room", room_id=booking.room.id)
+
+
+def view_client(request, client_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        staff = get_object_or_404(Staff, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+        
+    client = get_object_or_404(Client, id=client_id)
+    
+    bookings = Booking.objects.filter(user=client, room__hotel_id=staff.hotel_id)
+
+    
+    return render(request, 'holidays/view_client.html', {"client": client, "bookings": bookings})
+
 
 
 

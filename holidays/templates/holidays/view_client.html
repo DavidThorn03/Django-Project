@@ -1,0 +1,25 @@
+<h1>{{ client.user.user_name }}</h1>
+<p>Email: {{ client.user.email }}</p>
+<p>Phone Number: {{ client.user.mobile }}</p>
+<p>Address: {{ client.address }}</p>
+<p>Age: {{ client.age }}</p>
+{% if error %}  
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+{% if bookings %}
+<ul>
+{% for booking in bookings %}
+<li><a href="{% url 'holidays:staff_room' booking.room.id %}">{{booking.room.description}}</a>
+        <ul>
+            <li>Check in: {{booking.check_in}}</li>
+            <li>Check out: {{booking.check_out}}</li>
+            {% if booking.approved %}<li> Booking has been approved </li>
+            <li>Booking has {% if not booking.payed %}not{% endif %} been payed for {% else %}<li><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></li>
+            {% endif %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>This client has no bookings with us</p>
+{% endif %}

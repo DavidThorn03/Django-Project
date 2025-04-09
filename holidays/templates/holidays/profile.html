@@ -17,6 +17,8 @@
             <li>Check in: {{booking.check_in}}</li>
             <li>Check out: {{booking.check_out}}</li>
             <li>Booking {% if not booking.approved %}not yet {%endif%}approved</li>
+            {% if booking.approved %}<li> Booking has{% if not booking.payed%} not{% endif %} been paid {% if not booking.payed%} <a href="{% url 'holidays:pay_booking' booking.id %}">Pay now</a>{% endif %}</li>{% endif %}
+
             <li><a href="{% url 'holidays:cancel_booking' booking.id %}">Cancel Booking</a></li>
         </ul>
     </li>
