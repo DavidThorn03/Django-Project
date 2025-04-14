@@ -2,7 +2,14 @@
     <ul>
     {% if user %}<h1>Welcome {{ user }}</h1>{% endif %}
     {% for hotel in hotels %}
-        <li><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></li>
+        <li><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.image }}</a>
+            <ul>
+                <li><a href="{% url 'holidays:hotel' hotel.id %}"><strong>Name:</strong> {{ hotel.hotel_name }}</a></li>
+                <li><strong>Location:</strong> {{ hotel.location }}</li>
+                <li>{{ hotel.description }}</li>
+
+            </ul>
+        </li>
     {% endfor %}
     </ul>
 {% else %}

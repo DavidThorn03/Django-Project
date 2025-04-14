@@ -1,0 +1,17 @@
+<form action= "{% url 'holidays:edit_room' room.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>{{ room.description }}</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="description">Description:</label>
+        <input type="text" name="description" id="description" value="{{ room.description }}">
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" value="{{ room.price }}">
+        <label for="image">Image:</label>
+        <input type="text" name="image" id="image" value="{{ room.image }}">
+        <label for="num">Number of Rooms:</label>
+        <input type="number" name="num" id="num" value="{{ room.number }}">
+
+    </fieldset>
+    <input type="submit" value="Update Room">
+</form>

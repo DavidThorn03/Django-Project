@@ -208,6 +208,204 @@ def view_client(request, client_id):
 
 
 
+# WebAdmin pages
+def admin_index(request):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+        
+    hotel = get_object_or_404(Hotel, id=webadmin.hotel_id)
+    
+    return render(request, 'holidays/admin_index.html', {"hotel": hotel, "admin": webadmin})
+
+
+def edit_hotel(request):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 0:
+        return redirect("holidays:login")
+        
+    hotel = get_object_or_404(Hotel, id=webadmin.hotel_id)
+    
+    if request.method == "POST":
+        hotel.description = request.POST["description"]
+        hotel.location = request.POST["location"]
+        hotel.address = request.POST["address"]
+        hotel.email = request.POST["email"]
+        hotel.contact = request.POST["contact"]
+        hotel.image = request.FILES.get("image", hotel.image)
+
+        hotel.save()
+        
+        return redirect("holidays:admin_index")
+    
+    return render(request, 'holidays/edit_hotel.html', {"hotel": hotel})
+
+def edit_room(request, room_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 2:
+        return redirect("holidays:login")
+        
+    room = get_object_or_404(Room, id=room_id)
+    
+    if request.method == "POST":
+        room.description = request.POST["description"]
+        room.price = request.POST["price"]
+        room.image = request.POST["image"]
+        room.number = request.POST["num"]
+        if Room.objects.filter(description=room.description).exists():
+            raise Exception("Room already exists.")
+
+        room.save()
+        
+        return redirect("holidays:admin_index")
+    
+    return render(request, 'holidays/edit_room.html', {"room": room})
+
+
+def add_room(request):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 1:
+        return redirect("holidays:login")
+        
+    hotel = get_object_or_404(Hotel, id=webadmin.hotel_id)
+    
+    if request.method == "POST":
+        if Room.objects.filter(description=request.POST["description"]).exists():
+            raise Exception("Room already exists.")
+        
+        room = Room(
+            hotel=hotel,
+            description=request.POST["description"],
+            price=request.POST["price"],
+            image=request.FILES.get("image"),
+            number=request.POST["num"]
+        )
+        room.save()
+        
+        return redirect("holidays:admin_index")
+    
+    return render(request, 'holidays/add_room.html', {"hotel": hotel})
+
+
+def delete_room(request, room_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 1:
+        return redirect("holidays:login")
+        
+    room = get_object_or_404(Room, id=room_id)
+    room.delete()
+    
+    return redirect("holidays:admin_index")
+
+def add_admin(request):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 0:
+        return redirect("holidays:login")
+        
+    hotel = get_object_or_404(Hotel, id=webadmin.hotel_id)
+    
+    if request.method == "POST":
+        username = request.POST["user_name"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        mobile = request.POST["mobile"]
+        privilege = request.POST["privilege"]
+        
+        try:
+            if User.objects.filter(email=email).exists():
+                raise Exception("Username already exists.")
+            user = User.objects.create(user_name=username, email=email, password=password, mobile=mobile)
+            user.save()
+            webadmin = WebAdmin.objects.create(user=user, hotel=hotel, privilege=privilege)
+            webadmin.save()
+            return redirect("holidays:admin_index")
+        except Exception as e:
+            return render(request, 'holidays/add_admin.html')
+        
+    return render(request, 'holidays/add_admin.html')
+
+def add_staff(request):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        webadmin = get_object_or_404(WebAdmin, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+    
+    if webadmin.privilege > 0:
+        return redirect("holidays:login")
+        
+    hotel = get_object_or_404(Hotel, id=webadmin.hotel_id)
+    
+    if request.method == "POST":
+        username = request.POST["user_name"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        mobile = request.POST["mobile"]
+        
+        try:
+            if User.objects.filter(email=email).exists():
+                raise Exception("Username already exists.")
+            user = User.objects.create(user_name=username, email=email, password=password, mobile=mobile)
+            user.save()
+            webadmin = Staff.objects.create(user=user, hotel=hotel)
+            webadmin.save()
+            return redirect("holidays:admin_index")
+        except Exception as e:
+            return render(request, 'holidays/add_staff.html')
+        
+    return render(request, 'holidays/add_staff.html')
+
+
+
+
 
 # authentication pages
 
@@ -222,8 +420,8 @@ def login(request):
 
             if is_Staff(user.id):
                 response = redirect("holidays:staff_index")
-            #elif is_WebAdmin(user.id):
-                #response = redirect("holidays:webadmin_index")
+            elif is_WebAdmin(user.id):
+                response = redirect("holidays:admin_index")
 
             response.set_cookie('user_name', user.user_name, max_age=3600)  
             response.set_cookie('user_id', user.id, max_age=3600)

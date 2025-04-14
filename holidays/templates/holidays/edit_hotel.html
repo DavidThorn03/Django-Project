@@ -1,0 +1,21 @@
+<form action= "{% url 'holidays:edit_hotel' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>{{ hotel.hotel_name }}</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="location">Location:</label>
+        <input type="text" name="location" id="location" value="{{ hotel.location }}">
+        <label for="description">Description:</label>
+        <input type="text" name="description" id="description" value="{{ hotel.description }}">
+        <label for="address">Address:</label>
+        <input type="text" name="address" id="address" value="{{ hotel.address }}">
+        <label for="image">Image:</label>
+        <input type="text" name="image" id="image" value="{{ hotel.image }}">
+        <label for="contact">Contact:</label>
+        <input type="number" name="contact" id="contact" value="{{ hotel.contact }}">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" value="{{ hotel.email }}">
+
+    </fieldset>
+    <input type="submit" value="Update Hotel">
+</form>

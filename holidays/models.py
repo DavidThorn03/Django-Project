@@ -8,6 +8,9 @@ from django.db import models
 
 class Hotel(models.Model):
     hotel_name = models.CharField(max_length=200)
+    description = models.CharField(max_length=500)
+    address = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='images/', default='images/default.jpg')
     location = models.CharField(max_length=200)
     contact = models.IntegerField(default=0)
     email = models.CharField(max_length=200)
@@ -25,6 +28,7 @@ class Room(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     price = models.IntegerField(default=0)
     description = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='images/', default='images/default.jpg')
     number = models.IntegerField(default=0)
     def __str__(self):
         return self.description

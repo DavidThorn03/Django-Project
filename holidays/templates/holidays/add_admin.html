@@ -1,0 +1,23 @@
+<form action= "{% url 'holidays:add_admin' %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>Add Admin</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="user_name">User Name:</label>
+        <input type="text" name="user_name" id="user_name" required>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" name="confirm_password" id="confirm_password" required>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <label for="mobile">Mobile:</label>
+        <input type="number" name="mobile" id="mobile" required>
+        <label for="privilege">Privilege:</label>
+        <select name="privilege" id="privilege" required>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+    </fieldset>
+    <input type="submit" value="Add Admin">
+    </form>

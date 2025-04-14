@@ -1,0 +1,30 @@
+<h1>{{ hotel.hotel_name }}</h1>
+<p>Rating = {{ hotel.get_rating }}</p>
+<p>Location: {{ hotel.location }}</p>
+<p>{{ hotel.description }}</p>
+<p>Address: {{ hotel.address }}</p>
+{% if admin.privilege == 0 %}
+<p><a href="{% url 'holidays:edit_hotel' %}"> Edit</a></p>
+<p><a href="{% url 'holidays:add_staff' %}"> Add Staff</a></p>
+<p><a href="{% url 'holidays:add_admin' %}"> Add Web Admin</a></p>
+{% endif %}
+{% if admin.privilege < 2 %}
+<a href="{% url 'holidays:add_room' %}"> Add Room</a>
+{% endif %}
+
+<p>{{ hotel.image }}</p>
+{% if error %}
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+<ul>
+{% for room in hotel.room_set.all %}
+    <li><a href="{% url 'holidays:book' room.id %}">Image: {{room.image}}<a>
+        <ul>
+            <li><strong>{{ room.description }}</strong></li>
+            <li>Price: €{{ room.price }}</li>
+            <li>Number of Rooms: {{ room.number }}</li>
+            <li> {% if admin.privilege < 3 %}<a href="{% url 'holidays:edit_room' room.id %}"> Edit</a> {% endif %} {% if admin.privilege < 2 %} <a href="{% url 'holidays:delete_room' room.id %}"> Delete</a>{% endif %}</li>
+        </ul>
+    </li>
+{% endfor %}
+</ul>

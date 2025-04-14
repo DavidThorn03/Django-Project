@@ -20,6 +20,15 @@ urlpatterns = [
     path("remove_booking/<int:booking_id>/", views.remove_booking, name="remove_booking"),
     path("view_client/<int:client_id>/", views.view_client, name="view_client"),
 
+    #admin pages
+    path("admin_index/", views.admin_index, name="admin_index"),
+    path("edit_hotel/", views.edit_hotel, name="edit_hotel"),
+    path("edit_room/<int:room_id>/", views.edit_room, name="edit_room"),
+    path("add_room/", views.add_room, name="add_room"),
+    path("delete_room/<int:room_id>/", views.delete_room, name="delete_room"),
+    path("add_admin/", views.add_admin, name="add_admin"),
+    path("add_staff/", views.add_staff, name="add_staff"),
+
     # authentication pages
     path("login/", views.login, name="login"),
     path("logout/", views.logout_user, name="logout_user"),

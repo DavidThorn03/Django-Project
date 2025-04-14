@@ -7,7 +7,7 @@
 {% if bookings %}
 <ul>
 {% for booking in bookings %}
-<li><a href="{% url 'holidays:view_client' user.id %}">{{ booking.user.user.user_name }}</a>
+<li><a href="{% url 'holidays:view_client' booking.user.id %}">{{ booking.user.user.user_name }}</a>
         <ul>
             <li>Check in: {{booking.check_in}}</li>
             <li>Check out: {{booking.check_out}}</li>
