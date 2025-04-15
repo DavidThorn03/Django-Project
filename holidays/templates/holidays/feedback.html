@@ -1,0 +1,22 @@
+<h1>{{ query.hotel.hotel_name }}</h1>
+{% if error %}
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+<p>User: {{ query.user.user.user_name }}</p>
+<p>Subject: {{ query.subject }}</p>
+<p>Query: {{ query.query }}</p>
+
+<form action= "{% url 'holidays:feedback' query.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>Feed Back</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="feedback">Feedback</label>
+        <input type="text" name="feedback" id="feedback" required>
+
+    </fieldset>
+    <input type="submit" value="Send Feedback">
+</form>
+
+
+

@@ -1,0 +1,29 @@
+<h1>{{ hotel.hotel_name }}</h1>
+<p>Rating = {{ hotel.get_rating }}</p>
+<p>Location: {{ hotel.location }}</p>
+<p>{{ hotel.description }}</p>
+<p>Address: {{ hotel.address }}</p>
+
+<p>{{ hotel.image }}</p>
+{% if error %}
+<p><strong>{{ error }}</strong></p>
+{% endif%}
+<h2>Contact Us</h2>
+<p>Phone: {{ hotel.contact }}     Email: <a href="mailto:{{ hotel.email }}"> {{ hotel.email }} </a></p>
+
+<form action= "{% url 'holidays:contact' hotel.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>Web contact</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <label for="subject">Subject</label>
+        <input type="text" name="subject" id="subject" required>
+        <label for="query">Query</label>
+        <input type="text" name="query" id="query" required>
+
+    </fieldset>
+    <input type="submit" value="Send Message">
+</form>
+
+
+

@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from datetime import datetime
 
-from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating
+from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating, Query, Feedback
 
 # Client pages
 
@@ -106,6 +106,22 @@ def pay_booking(request, booking_id):
         return render(request, 'holidays/pay_booking.html', {'booking': booking_id})
     
 
+def contact(request, hotel_id):
+    hotel = get_object_or_404(Hotel, pk=hotel_id)
+    user = request.COOKIES.get("user_id")
+    if not is_Client(user):
+        return redirect("holidays:login")
+        
+    if request.method == "POST":
+        subject = request.POST["subject"]
+        query = request.POST["query"]
+        new = Query(user_id=user, hotel_id=hotel_id, subject=subject, query=query, date=datetime.now(), status=False)
+        new.save()
+        return redirect("holidays:hotel", hotel_id=hotel_id)
+    
+    return render(request, 'holidays/contact.html', {'hotel': hotel})
+    
+
 
 # staff pages
 
@@ -205,6 +221,29 @@ def view_client(request, client_id):
 
     
     return render(request, 'holidays/view_client.html', {"client": client, "bookings": bookings})
+
+def feedback(request, query_id):
+    user = request.COOKIES.get("user_id")
+    if user is None:
+        return redirect("holidays:login")
+    
+    try:
+        staff = get_object_or_404(Staff, user_id=user)
+    except Http404:
+        return redirect("holidays:login")
+        
+    query = get_object_or_404(Query, id=query_id)
+    
+    if query.hotel_id != staff.hotel_id:
+        return redirect("holidays:staff_index")
+
+    if request.method == "POST":
+        feedback = request.POST["feedback"]
+        new = Feedback(query_id=query.id, feedback=feedback, staff=staff, date=datetime.now())
+        new.send_feedback()
+        return redirect("holidays:staff_index")
+    
+    return render(request, 'holidays/feedback.html', {"query": query})
 
 
 

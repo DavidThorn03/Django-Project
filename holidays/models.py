@@ -1,8 +1,6 @@
 from datetime import date
 from django.db import models
-
-
-
+from django.core.mail import send_mail
 
 #Hotel models
 
@@ -22,6 +20,9 @@ class Hotel(models.Model):
             return 0
         else:
             return round(sum([rating.rating for rating in ratings]) / ratings.count(), 1)
+    def get_unanswered_queries(self):
+        queries = Query.objects.filter(hotel=self, status=False)
+        return queries
 
 
 class Room(models.Model):
@@ -51,21 +52,21 @@ class User(models.Model):
         return self.user_name
 
 class Client(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(default=0)
     address = models.CharField(max_length=200)
     def __str__(self):
         return self.user.user_name
 
 class WebAdmin(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     privilege = models.IntegerField(default=0)
     def __str__(self):
         return self.user.user_name
 
 class Staff(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     def __str__(self):
         return self.user.user_name
@@ -113,12 +114,37 @@ class Query(models.Model):
         return self.user.user.user_name + " " + self.hotel.hotel_name + " " + self.subject + " " + self.query
     
 class Feedback(models.Model):
-    query = models.ForeignKey(Query, on_delete=models.CASCADE)
+    query = models.OneToOneField(Query, on_delete=models.CASCADE)
     feedback = models.CharField(max_length=500)
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     date = models.DateTimeField("feedback date")
     def __str__(self):
         return self.query.user.user.user_name + " " + self.query.hotel.hotel_name + " " + self.feedback
+    def send_feedback(self):
+        response = (
+            f"This email is in response to your query to {self.query.hotel.hotel_name}:\n"
+            f"{self.feedback}\n\n"
+            "Thank you for your query!\n\n\n"
+            f"Original query: {self.query.query}\n"
+        )
+
+        try: 
+            send_mail(
+                self.query.subject,
+                response,
+                None,
+                [self.query.user.user.email],
+                fail_silently=False,
+            )
+            print("Feedback sent to: ", self.query.user.user.email)
+            self.query.status = True
+            self.query.save()
+            self.save()
+            return True
+        except Exception as e:
+            print("Error sending email: ", e)
+            return False
+
 
 
 """

@@ -4,7 +4,7 @@
 <p>Location: {{ hotel.location }}</p>
 <p>{{ hotel.description }}</p>
 <p>Address: {{ hotel.address }}</p>
-<p>Contact - PUT LINK TO CONTACT PAGE HERE</p>
+<p><a href="{% url 'holidays:contact' hotel.id %}">Contact</a></p>
 
 <p>{{ hotel.image }}</p>
 {% if error %}

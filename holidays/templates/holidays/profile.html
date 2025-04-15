@@ -7,6 +7,7 @@
 {% if error %}  
 <p><strong>{{ error }}</strong></p>
 {% endif%}
+<h2>Bookings</h2>
 {% if client.booking_set.all %}
 <ul>
 {% for booking in client.booking_set.all %}
@@ -26,4 +27,21 @@
 </ul>
 {% else %}
 <p>You have no bookings.</p>
+{% endif %}
+<h2>Queries</h2>
+{% if client.query_set.all %}
+<ul>
+{% for query in client.query_set.all %}
+<li><a href="{% url 'holidays:hotel' query.hotel.id %}">{{ query.hotel.hotel_name }}</a>
+        <ul>
+            <li>{{query.subject}}</li>
+            <li>{{query.query}}</li>
+            {% if not query.status %} <li>Query not yet answered</li>
+            {% else %}<li>Feedback = {{ query.feedback.feedback }}</li>{% endif %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>You have no queries.</p>
 {% endif %}

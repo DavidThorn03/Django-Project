@@ -1,6 +1,17 @@
 <h1>{{ hotel.hotel_name }}</h1>
+<h2>Bookings</h2>
 <ul>
 {% for room in hotel.room_set.all %}
     <li>{{ room.description }} {% if room.num_unapproved > 0 %} <a href="{% url 'holidays:staff_room' room.id %}">{{ room.num_unapproved }} Unapproved Bookings</a> {% else %} No Unapproved Bookings {% endif %}</li>
 {% endfor %}
 </ul>
+<h2>Queries</h2>
+{% if hotel.get_unanswered_queries %}
+<ul>
+{% for query in hotel.get_unanswered_queries %}
+    <li><a href="{% url 'holidays:feedback' query.id %}">{{ query.subject }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No queries</p>
+{% endif %}
