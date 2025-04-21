@@ -4,7 +4,7 @@
 <p>{{ hotel.description }}</p>
 <p>Address: {{ hotel.address }}</p>
 
-<p>{{ hotel.image }}</p>
+<img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
 {% if error %}
 <p><strong>{{ error }}</strong></p>
 {% endif%}

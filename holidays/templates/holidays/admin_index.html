@@ -12,13 +12,13 @@
 <a href="{% url 'holidays:add_room' %}"> Add Room</a>
 {% endif %}
 
-<p>{{ hotel.image }}</p>
+<img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
 {% if error %}
 <p><strong>{{ error }}</strong></p>
 {% endif%}
 <ul>
 {% for room in hotel.room_set.all %}
-    <li><a href="{% url 'holidays:book' room.id %}">Image: {{room.image}}<a>
+    <li><a href="{% url 'holidays:book' room.id %}"><img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 300px; height: 200px;"/><a>
         <ul>
             <li><strong>{{ room.description }}</strong></li>
             <li>Price: €{{ room.price }}</li>

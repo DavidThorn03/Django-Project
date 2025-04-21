@@ -284,8 +284,9 @@ def edit_hotel(request):
         hotel.address = request.POST["address"]
         hotel.email = request.POST["email"]
         hotel.contact = request.POST["contact"]
-        hotel.image = request.FILES.get("image", hotel.image)
-
+        if request.FILES.get("image") is not None:
+            hotel.image = request.FILES.get("image")
+            
         hotel.save()
         
         return redirect("holidays:admin_index")
@@ -310,10 +311,9 @@ def edit_room(request, room_id):
     if request.method == "POST":
         room.description = request.POST["description"]
         room.price = request.POST["price"]
-        room.image = request.POST["image"]
         room.number = request.POST["num"]
-        if Room.objects.filter(description=room.description).exists():
-            raise Exception("Room already exists.")
+        if request.FILES.get("image") is not None:
+            room.image = request.FILES.get("image")
 
         room.save()
         
@@ -345,9 +345,10 @@ def add_room(request):
             hotel=hotel,
             description=request.POST["description"],
             price=request.POST["price"],
-            image=request.FILES.get("image"),
-            number=request.POST["num"]
+            number=request.POST["num"],
         )
+        if request.FILES.get("image") is not None:
+            room.image = request.FILES.get("image")
         room.save()
         
         return redirect("holidays:admin_index")

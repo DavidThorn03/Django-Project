@@ -1,4 +1,4 @@
-<form action= "{% url 'holidays:edit_hotel' %}" method="post">
+<form action= "{% url 'holidays:edit_hotel' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <fieldset>
         <legend><h1>{{ hotel.hotel_name }}</h1></legend>
@@ -10,7 +10,7 @@
         <label for="address">Address:</label>
         <input type="text" name="address" id="address" value="{{ hotel.address }}">
         <label for="image">Image:</label>
-        <input type="text" name="image" id="image" value="{{ hotel.image }}">
+        <input type="file" name="image" id="image" value="{{ hotel.image }}">
         <label for="contact">Contact:</label>
         <input type="number" name="contact" id="contact" value="{{ hotel.contact }}">
         <label for="email">Email:</label>

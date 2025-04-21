@@ -1,6 +1,6 @@
 from django.test import TestCase
-from holidays.models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating
-from datetime import date, timedelta
+from holidays.models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating, Query, Feedback
+from datetime import date, timedelta, datetime
 
 # Create your tests here.
 
@@ -117,6 +117,76 @@ class BookingTestCase(TestCase):
         booking5 = Booking(user=user1, room=room2, check_in=date.today(), check_out=date.today() + timedelta(6))
         self.assertEqual(booking5.valid_dates(), True)
 
+class QueryTests(TestCase):
+    def setUp(self):
+        hotel = Hotel(hotel_name="Test Hotel", location="Test Location", contact=22, email="test@test.com")
+        hotel.save()
+
+        user1 = User(user_name="user1", email="user1@test.com", password="password", mobile=1234567890)
+        user1.save()
+        client1 = Client(user=user1, age=20, address="Test Address")
+        client1.save()
+        user2 = User(user_name="user2", email="user2@test.com", password="password", mobile=1234567890)
+        user2.save()
+        client2 = Client(user=user2, age=20, address="Test Address")
+        client2.save()
+        user3 = User(user_name="user3", email="user3@test.com", password="password", mobile=1234567890)
+        user3.save()
+        client3 = Client(user=user3, age=20, address="Test Address")
+        client3.save()
+        user4 = User(user_name="staff1", email="staff1@test.com", password="password", mobile=1234567890)
+        user4.save()
+        staff1 = Staff(user=user4, hotel=hotel)
+        staff1.save()
+
+        query1 = Query(user=client1, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 1", status=False)
+        query1.save()
+        query2 = Query(user=client2, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 2", status=False)
+        query2.save()
+        query3 = Query(user=client3, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 3", status=False)
+        query3.save()
+        query4 = Query(user=client1, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 4", status=True)
+        query4.save()
+        query5 = Query(user=client2, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 5", status=True)
+        query5.save()
+
+        feedback1 = Feedback(query=query4, feedback="Test Feedback 1", staff=staff1, date=datetime.now())
+        feedback1.save()
+        feedback2 = Feedback(query=query5, feedback="Test Feedback 2", staff=staff1, date=datetime.now())
+        feedback2.save()
+
+    def test_get_queries(self):
+        #GET all queries and users
+        staff = User.objects.get(user_name="staff1")
+        staff = Staff.objects.get(user=staff)
+
+        hotel = Hotel.objects.get(hotel_name="Test Hotel")
+
+        #Get all queries for this hotel
+        queries = hotel.get_unanswered_queries()
+        self.assertEqual(queries.count(), 3)
+
+        self.assertEqual(queries[0].status, False)
+        self.assertEqual(queries[1].status, False)
+        self.assertEqual(queries[2].status, False)
+
+    def test_sendfeedback(self):
+        #GET all queries and users
+        staff = User.objects.get(user_name="staff1")
+        staff = Staff.objects.get(user=staff)
+
+        hotel = Hotel.objects.get(hotel_name="Test Hotel")
+
+        #Get all queries for this hotel
+        queries = hotel.get_unanswered_queries()
+        self.assertEqual(queries.count(), 3)
+
+        #Send feedback to the user
+        feedback = Feedback(query=queries[0], feedback="Test Feedback", staff=staff, date=datetime.now())
+        feedback.send_feedback()
+        
+        #successful feedback will set status to True
+        self.assertEqual(feedback.query.status, True)
 
 
 

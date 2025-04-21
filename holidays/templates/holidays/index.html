@@ -2,7 +2,8 @@
     <ul>
     {% if user %}<h1>Welcome {{ user }}</h1>{% endif %}
     {% for hotel in hotels %}
-        <li><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.image }}</a>
+        <li><a href="{% url 'holidays:hotel' hotel.id %}"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
+        </a>
             <ul>
                 <li><a href="{% url 'holidays:hotel' hotel.id %}"><strong>Name:</strong> {{ hotel.hotel_name }}</a></li>
                 <li><strong>Location:</strong> {{ hotel.location }}</li>
