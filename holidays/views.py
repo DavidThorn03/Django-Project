@@ -12,13 +12,14 @@ from .models import Hotel, Client, Room, Booking, User, WebAdmin, Staff, Rating,
 def index(request):
     hotels = Hotel.objects.all()
     user = request.COOKIES.get("user_name")
-    print(user)
     context = {'hotels': hotels, "user": user}
     return render(request, 'holidays/index.html', context)
 
 def hotel(request, hotel_id):
     hotel = get_object_or_404(Hotel, pk=hotel_id)
-    return render(request, 'holidays/hotel.html', {'hotel': hotel})
+    user = request.COOKIES.get("user_name")
+    context = {'hotel': hotel, "user": user}
+    return render(request, 'holidays/hotel.html', context)
 
 def profile(request):
     user = request.COOKIES.get("user_id")
@@ -49,7 +50,9 @@ def book(request, room_id):
         if not is_Client(user):
             return redirect("holidays:login")
         
-        new = Booking(user_id=user, room_id=room_id, check_in=check_in, check_out=check_out)
+        user = get_object_or_404(Client, user=user)
+        
+        new = Booking(user_id=user.id, room_id=room_id, check_in=check_in, check_out=check_out)
 
         if not new.valid_dates():
             return Http404("Check-in date must be before check-out date.")
@@ -58,16 +61,19 @@ def book(request, room_id):
         return redirect("holidays:profile")  
         
     if is_Client(user):
-        return render(request, 'holidays/book.html', {'room': room, 'user_id': user})
+        return render(request, 'holidays/book.html', {'room': room})
     
     return redirect("holidays:login")
 
 def cancel_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
     user = request.COOKIES.get("user_id")
-    if user is None:
+    if not is_Client(user):
         return redirect("holidays:login")
-    elif int(user) == booking.user_id:
+    
+    user = get_object_or_404(Client, user=user)
+
+    if user.id == booking.user_id:
         booking.delete()
         return redirect("holidays:profile")
     
@@ -79,11 +85,12 @@ def rate(request, hotel_id, rating):
     user = request.COOKIES.get("user_id")
     if not is_Client(user):
         return redirect("holidays:login")
+    user = get_object_or_404(Client, user=user)
         
     try:
         Rating.objects.update_or_create(
             hotel_id = hotel.id,
-            user_id = user,
+            user_id = user.id,
             defaults = {'rating': int(rating)}
         )
         return redirect("holidays:hotel", hotel_id=hotel_id)
@@ -95,15 +102,16 @@ def pay_booking(request, booking_id):
     if user is None:
         return redirect("holidays:login")
     
+    booking = get_object_or_404(Booking, pk=booking_id)
+    
     if request.method == "POST":
         # propcess user info here if payment system is used 
-        booking = get_object_or_404(Booking, pk=booking_id)
         booking.payed = True
         booking.save()
         return redirect("holidays:profile")
     
     else: 
-        return render(request, 'holidays/pay_booking.html', {'booking': booking_id})
+        return render(request, 'holidays/pay_booking.html', {'booking': booking})
     
 
 def contact(request, hotel_id):
@@ -111,11 +119,13 @@ def contact(request, hotel_id):
     user = request.COOKIES.get("user_id")
     if not is_Client(user):
         return redirect("holidays:login")
+    
+    user = get_object_or_404(Client, user=user)
         
     if request.method == "POST":
         subject = request.POST["subject"]
         query = request.POST["query"]
-        new = Query(user_id=user, hotel_id=hotel_id, subject=subject, query=query, date=datetime.now(), status=False)
+        new = Query(user_id=user.id, hotel_id=hotel_id, subject=subject, query=query, date=datetime.now(), status=False)
         new.save()
         return redirect("holidays:hotel", hotel_id=hotel_id)
     
@@ -500,7 +510,7 @@ def logout_user(request):
     response.delete_cookie('user_name')
     response.delete_cookie('user_id')
     response.delete_cookie('user_type')
-    return redirect("holidays:login")
+    return response
 
 def is_Client(user_id):
     try:

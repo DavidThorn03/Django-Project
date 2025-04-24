@@ -1,17 +1,68 @@
-<h1>{{ hotel.hotel_name }}</h1>
-<h2>Bookings</h2>
-<ul>
-{% for room in hotel.room_set.all %}
-    <li>{{ room.description }} {% if room.num_unapproved > 0 %} <a href="{% url 'holidays:staff_room' room.id %}">{{ room.num_unapproved }} Unapproved Bookings</a> {% else %} No Unapproved Bookings {% endif %}</li>
-{% endfor %}
-</ul>
-<h2>Queries</h2>
-{% if hotel.get_unanswered_queries %}
-<ul>
-{% for query in hotel.get_unanswered_queries %}
-    <li><a href="{% url 'holidays:feedback' query.id %}">{{ query.subject }}</a></li>
-{% endfor %}
-</ul>
-{% else %}
-<p>No queries</p>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:staff_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col">
+                <a href="{% url 'holidays:hotel' hotel.id %}" class="p-5"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 250px;"/></a>
+            </div>
+            <div class="col">
+                <h5 class="card-title"><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></h5>
+                <p class="card-text">Location: {{ hotel.location }}</p>
+                <p class="card-text">Rating: {{ hotel.get_rating }}</p>
+                <p class="card-text">Description: {{ hotel.description }}</p>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+    <div class="row align-items-start">
+        <div class="col-9">
+        <h2>Bookings</h2>
+        {% for room in hotel.room_set.all %}
+        <div class="card-body rounded-3 p-1">
+            <div class="row align-items-start">
+                <div class="col">
+                    <p class="card-text">{{ room.description }}: {% if room.num_unapproved > 0 %} <a href="{% url 'holidays:staff_room' room.id %}">{{ room.num_unapproved }} Unapproved Bookings</a> {% else %} No Unapproved Bookings {% endif %}</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+    </div>
+    <div class="col">
+        <div class="justify-content-center">
+        <h2>Queries</h2>
+        {% if hotel.get_unanswered_queries %}
+            {% for query in hotel.get_unanswered_queries %}
+            <div class="card-body rounded-3 p-1">
+                <div class="row align-items-start">
+                    <div class="col">
+                        <p class="card-text"><a href="{% url 'holidays:feedback' query.id %}">{{ query.user.user.user_name }}: {{ query.subject }}</a></p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+            {% else %}
+            <p>No queries</p>
+            {% endif %}
+    </div>
+    </div>
+</body>
+</html>

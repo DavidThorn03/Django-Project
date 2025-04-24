@@ -1,18 +1,64 @@
-{% if hotels %}
-    <ul>
-    {% if user %}<h1>Welcome {{ user }}</h1>{% endif %}
-    {% for hotel in hotels %}
-        <li><a href="{% url 'holidays:hotel' hotel.id %}"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
-        </a>
-            <ul>
-                <li><a href="{% url 'holidays:hotel' hotel.id %}"><strong>Name:</strong> {{ hotel.hotel_name }}</a></li>
-                <li><strong>Location:</strong> {{ hotel.location }}</li>
-                <li>{{ hotel.description }}</li>
-
-            </ul>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:index' %}">HOME</a>
         </li>
-    {% endfor %}
+        {% if user %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+        {% else %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:login' %}">LOGIN</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:register' %}">REGISTER</a>
+        </li>
+        {% endif %}
     </ul>
-{% else %}
-    <p>No hotels are available.</p>
-{% endif %}
+    <div class="container">
+        <br>
+        <h1 class="text-center">Hotels</h1>
+        <br>
+        <p class="text-center">Find the best hotels for your stay</p>
+        <br>
+        {% if hotels %}
+            <ul>
+            {% for hotel in hotels %}
+            <div class="card-body">
+                <li class="list-group-item">
+                    <div class="row align-items-start">
+                        <div class="col">
+                            <a href="{% url 'holidays:hotel' hotel.id %}"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/></a>
+                        </div>
+                        <div class="col">
+                            <br>
+                            <h5 class="card-title"><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></h5>
+                            <br>
+                            <p class="card-text">Location: {{ hotel.location }}</p>
+                            <p class="card-text">Rating: {{ hotel.get_rating }}</p>
+                            <p class="card-text">Description: {{ hotel.description }}</p>
+                        </div>
+                    </div>
+                </li>
+            </div>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hotels are available.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>

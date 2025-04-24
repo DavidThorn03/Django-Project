@@ -1,30 +1,82 @@
-<h1>{{ hotel.hotel_name }}</h1>
-<p>Rating = {{ hotel.get_rating }}</p>
-<p>Location: {{ hotel.location }}</p>
-<p>{{ hotel.description }}</p>
-<p>Address: {{ hotel.address }}</p>
-{% if admin.privilege == 0 %}
-<p><a href="{% url 'holidays:edit_hotel' %}"> Edit</a></p>
-<p><a href="{% url 'holidays:add_staff' %}"> Add Staff</a></p>
-<p><a href="{% url 'holidays:add_admin' %}"> Add Web Admin</a></p>
-{% endif %}
-{% if admin.privilege < 2 %}
-<a href="{% url 'holidays:add_room' %}"> Add Room</a>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:admin_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col">
+                <a href="{% url 'holidays:hotel' hotel.id %}" class="p-5"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 250px;"/></a>
+            </div>
+            <div class="col">
+                <h5 class="card-title"><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></h5>
+                <p class="card-text">Location: {{ hotel.location }}</p>
+                <p class="card-text">Rating: {{ hotel.get_rating }}</p>
+                <p class="card-text">Description: {{ hotel.description }}</p>
+                <p class="card-text">Address: {{ hotel.address }}</p>
+            </div>
+            {% if admin.privilege < 2 %}
+            <div class="col">  
+                <br>     
+                {% if admin.privilege == 0 %}
+                <p class="card-text"><a href="{% url 'holidays:edit_hotel' %}"> Edit</a></p>
+                <p class="card-text"><a href="{% url 'holidays:add_staff' %}"> Add Staff</a></p>
+                <p class="card-text"><a href="{% url 'holidays:add_admin' %}"> Add Web Admin</a></p>
+                {% endif %}
+                <p class="card-text"><a href="{% url 'holidays:add_room' %}"> Add Room</a></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <br>
 
-<img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
-{% if error %}
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-<ul>
-{% for room in hotel.room_set.all %}
-    <li><a href="{% url 'holidays:book' room.id %}"><img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 300px; height: 200px;"/><a>
-        <ul>
-            <li><strong>{{ room.description }}</strong></li>
-            <li>Price: €{{ room.price }}</li>
-            <li>Number of Rooms: {{ room.number }}</li>
-            <li> {% if admin.privilege < 3 %}<a href="{% url 'holidays:edit_room' room.id %}"> Edit</a> {% endif %} {% if admin.privilege < 2 %} <a href="{% url 'holidays:delete_room' room.id %}"> Delete</a>{% endif %}</li>
-        </ul>
-    </li>
-{% endfor %}
-</ul>
+    <div class="container">
+            <ul>
+            {% for room in hotel.room_set.all %}
+            <div class="card-body bg-primary rounded-3 p-2">
+                <li class="list-group-item">
+                    <div class="row align-items-start">
+                        <div class="col">
+                            <a href="{% url 'holidays:hotel' hotel.id %}"><img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 300px; height: 200px;"/></a>
+                        </div>
+                        <div class="col">
+                            <br>
+                            <h5 class="card-title"><a href="{% url 'holidays:hotel' hotel.id %}">{{ room.description }}</a></h5>
+                            <br>
+                            <p class="card-text">Price: {{ room.price }}</p>
+                            <br>
+                            <p class="card-text">Number of rooms: {{ room.number }}</p>
+                        </div>
+                        {% if admin.privilege < 3 %}
+                        <div class="col">
+                            <br>
+                            <br>
+                            <p class="card-text"><a href="{% url 'holidays:edit_room' room.id %}"> Edit</a></p>
+                            <br>
+                            {% if admin.privilege < 2 %}
+                            <p class="card-text"><a href="{% url 'holidays:delete_room' room.id %}"> Delete</a></p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+            </div>
+            <br>
+            {% endfor %}
+            </ul>
+    </div>
+</body>
+</html>

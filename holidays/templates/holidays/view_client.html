@@ -1,25 +1,58 @@
-<h1>{{ client.user.user_name }}</h1>
-<p>Email: {{ client.user.email }}</p>
-<p>Phone Number: {{ client.user.mobile }}</p>
-<p>Address: {{ client.address }}</p>
-<p>Age: {{ client.age }}</p>
-{% if error %}  
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-{% if bookings %}
-<ul>
-{% for booking in bookings %}
-<li><a href="{% url 'holidays:staff_room' booking.room.id %}">{{booking.room.description}}</a>
-        <ul>
-            <li>Check in: {{booking.check_in}}</li>
-            <li>Check out: {{booking.check_out}}</li>
-            {% if booking.approved %}<li> Booking has been approved </li>
-            <li>Booking has {% if not booking.payed %}not{% endif %} been payed for {% else %}<li><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></li>
-            {% endif %}
-        </ul>
-    </li>
-{% endfor %}
-</ul>
-{% else %}
-<p>This client has no bookings with us</p>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:staff_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+
+    <div class="container">
+        <h1 class="text-center">{{ client.user.user_name }}</h1>
+        <p>Email: {{ client.user.email }}</p>
+        <p>Phone Number: {{ client.user.mobile }}</p>
+        <p>Address: {{ client.address }}</p>
+        <p>Age: {{ client.age }}</p>
+        {% if error %}  
+        <p><strong>{{ error }}</strong></p>
+        {% endif%}
+    </div>
+    <br>
+        <h2 class="text-center">Bookings</h2>
+        {% if bookings %}
+        {% for booking in bookings %}
+        <div class="card-body rounded-3 p-1">
+            <div class="row align-items-start">
+                <div class="col text-center">
+                    <a href="{% url 'holidays:hotel' booking.room.hotel.id %}"><img src="{{ booking.room.image.url }}" class="img-fluid" alt="{{ room.description }}" style="width: 300px; height: 200px;"/></a>
+                </div>
+                <div class="col">
+                    <h5 class="card-title"><a href="{% url 'holidays:hotel' booking.room.hotel.id %}">{{ booking.room.description}} at {{ booking.room.hotel.hotel_name }}</a></h5>
+                    <p class="card-text">Price: {{ booking.room.price }}</p>
+                    <p class="card-text">Check in: {{ booking.check_in }}</p>
+                    <p class="card-text">Check out: {{ booking.check_out }}</p>
+                    {% if booking.approved %}<p class="card-text"> Booking has been approved </p>
+                    <p class="card-text">Booking has {% if not booking.payed %}not{% endif %} been payed for </p>
+                    {% else %}<p class="card-text"><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+        {% else %}
+        <p>This client has no bookings with us</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,23 +1,42 @@
-<h1>{{ room.hotel.hotel_name }}</h1>
-<p>{{ room.description }}</p>
-<p>Price: {{ room.price }}</p>
-{% if error %}  
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-{% if bookings %}
-<ul>
-{% for booking in bookings %}
-<li><a href="{% url 'holidays:view_client' booking.user.id %}">{{ booking.user.user.user_name }}</a>
-        <ul>
-            <li>Check in: {{booking.check_in}}</li>
-            <li>Check out: {{booking.check_out}}</li>
-    
-            <li><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></li>    
-
-        </ul>
-    </li>
-{% endfor %}
-</ul>
-{% else %}
-<p>No unapproved bookings for this room</p>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:staff_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+<div class="container ">
+    <h1 class="text-center">{{ room.hotel.hotel_name }}</h1>
+    <h2 class="text-center">{{ room.description }}</h2>
+    {% if error %}  
+    <p><strong>{{ error }}</strong></p>
+    {% endif%}
+    <br>
+        {% if bookings %}
+        {% for booking in bookings %}
+        <div class="card-body rounded-3 p-1">
+            <h5 class="card-title"><a href="{% url 'holidays:view_client' booking.user.id %}">{{ booking.user.user.user_name }}</a></h5>
+            <p class="card-text">Check in: {{ booking.check_in }}</p>
+            <p class="card-text" class="card-text">Check out: {{ booking.check_out }}</p>
+            <p class="card-text"><a href="{% url 'holidays:approve_booking' booking.id %}">Approve Booking</a>   <a href="{% url 'holidays:remove_booking' booking.id %}">Remove Booking</a></p>    
+        </div>
+        <br>
+        {% endfor %}
+        {% else %}
+        <p>No unapproved bookings for this room</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

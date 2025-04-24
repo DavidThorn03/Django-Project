@@ -1,14 +1,62 @@
-<form action= "{% url 'holidays:book' room.id %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>{{ room.hotel.hotel_name  }} {{ room.description }}</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <input type="hidden" name="room_id" value="{{ room.id }}">
-        <label for="check_in">Check In:</label>
-        <input type="date" name="check_in" id="check_in" required>
-        <label for="check_out">Check Out:</label>
-        <input type="date" name="check_out" id="check_out" required>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:index' %}">HOME</a>
+        </li>
+        {% if user %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+        {% else %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:login' %}">LOGIN</a>
+        </li>
+        {% endif %}
+    </ul>
+<div class="container">
+    <br>
+    <h1 class="text-center">Book Room</h1>
+    <br>
+    <div class="row align-items-start">
+        <div class="col">
+            <img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 400px; height: 300px;"/>
+        </div>
+        <div class="col">
+        <br>
+        <h3>{{ room.hotel.hotel_name }} </h3>
+        <br>
+        <h3>{{ room.hotel.location }}</h3>
+        <br>
+        <h3>{{ room.description }}</h3>
+        <br>
+        <h3>Price per night: {{ room.price }}</h3>
+        </div>
+    </div>
+    <br>
+    <form action= "{% url 'holidays:book' room.id %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="check_in" class="form-label">Check In</label>
+            <input type="date" class="form-control" id="check_in" name="check_in" required>
+        </div>
+        <div class="mb-3">
+            <label for="check_out" class="form-label">Check Out</label>
+            <input type="date" class="form-control" id="check_out" name="check_out" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Book</button>
+        </form>
 
-    </fieldset>
-    <input type="submit" value="Book">
-    </form>
+    </div>
+</body>
+</html>

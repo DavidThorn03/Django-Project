@@ -1,29 +1,72 @@
-<h1>{{ hotel.hotel_name }}</h1>
-<p>Rating = {{ hotel.get_rating }}</p>
-<p>Location: {{ hotel.location }}</p>
-<p>{{ hotel.description }}</p>
-<p>Address: {{ hotel.address }}</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:index' %}">HOME</a>
+        </li>
+        {% if user %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+        {% else %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:login' %}">LOGIN</a>
+        </li>
+        {% endif %}
+    </ul>
+    <br>
+    <div class="container">
+        <h1 class="text-center"><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></h1>
+        <br>
+        <div class="row align-items-start">
+            <div class="col">
+                <a href="{% url 'holidays:hotel' hotel.id %}" class="p-5"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 250px;"/></a>
+            </div>
+            <div class="col">
+                <p class="card-text">Location: {{ hotel.location }}</p>
+                <br>
+                <p class="card-text">Rating: {{ hotel.get_rating }}</p>
+                <br>
+                <p class="card-text">Description: {{ hotel.description }}</p>
+                <br>
+                <p class="card-text">Address {{ hotel.address }}</p>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+        <h2>Contact Us</h2>
+        <p>Phone: {{ hotel.contact }} 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Email: <a href="mailto:{{ hotel.email }}"> {{ hotel.email }} </a></p>
+        <h4>Web Contact</h4>
+        <br>
+        <div class="card p-2 rounded-3" style="border: 5px solid #0d6efd;">
+        <form action= "{% url 'holidays:contact' hotel.id %}" method="post">
+        {% csrf_token %}
+            <div class="mb-3">
+            <label for="subject" class="form-label">Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+            <div class="mb-3">
+            <label for="query" class="form-label">Query</label>
+            <input type="query" class="form-control" id="query" name="query" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+    </div>
 
-<img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
-{% if error %}
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-<h2>Contact Us</h2>
-<p>Phone: {{ hotel.contact }}     Email: <a href="mailto:{{ hotel.email }}"> {{ hotel.email }} </a></p>
-
-<form action= "{% url 'holidays:contact' hotel.id %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>Web contact</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label for="subject">Subject</label>
-        <input type="text" name="subject" id="subject" required>
-        <label for="query">Query</label>
-        <input type="text" name="query" id="query" required>
-
-    </fieldset>
-    <input type="submit" value="Send Message">
-</form>
-
-
-
+    </body>
+</html>

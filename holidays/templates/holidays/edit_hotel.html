@@ -1,21 +1,57 @@
-<form action= "{% url 'holidays:edit_hotel' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>{{ hotel.hotel_name }}</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label for="location">Location:</label>
-        <input type="text" name="location" id="location" value="{{ hotel.location }}">
-        <label for="description">Description:</label>
-        <input type="text" name="description" id="description" value="{{ hotel.description }}">
-        <label for="address">Address:</label>
-        <input type="text" name="address" id="address" value="{{ hotel.address }}">
-        <label for="image">Image:</label>
-        <input type="file" name="image" id="image" value="{{ hotel.image }}">
-        <label for="contact">Contact:</label>
-        <input type="number" name="contact" id="contact" value="{{ hotel.contact }}">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ hotel.email }}">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:admin_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
 
-    </fieldset>
-    <input type="submit" value="Update Hotel">
-</form>
+
+    <div class="container">
+        <br>
+        <h1 class="text-center">{{ hotel.hotel_name }}</h1>
+        <br>
+        <form action= "{% url 'holidays:edit_hotel' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <input type="text" class="form-control" id="description" name="description" value="{{ hotel.description }}">
+            </div>
+            <div class="mb-3">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control" id="location" name="location" value="{{ hotel.location }}">
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <input type="text" class="form-control" id="address" name="address" value="{{ hotel.address }}">
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Image</label>
+              <input type="file" class="form-control" id="image" name="image" value="{{ hotel.image }}">
+            </div>
+            <div class="mb-3">
+              <label for="contact" class="form-label">Contact</label>
+              <input type="number" class="form-control" id="contact" name="contact" value="{{ hotel.contact }}">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ hotel.email }}">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update Hotel</button>
+          </form>
+    
+        </div>
+    </body>
+    </html>

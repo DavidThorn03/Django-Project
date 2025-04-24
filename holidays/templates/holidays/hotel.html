@@ -1,23 +1,81 @@
-<h1>{{ hotel.hotel_name }}</h1>
-<p>Rating = {{ hotel.get_rating }}</p>
-<a href="{% url 'holidays:rate' hotel.id 1 %}">1</a> <a href="{% url 'holidays:rate' hotel.id 2 %}">2</a> <a href="{% url 'holidays:rate' hotel.id 3 %}">3</a> <a href="{% url 'holidays:rate' hotel.id 4 %}">4</a> <a href="{% url 'holidays:rate' hotel.id 5 %}">5</a>
-<p>Location: {{ hotel.location }}</p>
-<p>{{ hotel.description }}</p>
-<p>Address: {{ hotel.address }}</p>
-<p><a href="{% url 'holidays:contact' hotel.id %}">Contact</a></p>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:index' %}">HOME</a>
+        </li>
+        {% if user %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:profile' %}">PROFILE</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+        {% else %}
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:login' %}">LOGIN</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:register' %}">REGISTER</a>
+        </li>
+        {% endif %}
+    </ul>
+    <br>
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col">
+                <a href="{% url 'holidays:hotel' hotel.id %}" class="p-5"><img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 250px;"/></a>
+            </div>
+            <div class="col">
+                <h5 class="card-title"><a href="{% url 'holidays:hotel' hotel.id %}">{{ hotel.hotel_name }}</a></h5>
+                <p class="card-text">Location: {{ hotel.location }}</p>
+                <p class="card-text">Rating: {{ hotel.get_rating }}</p>
+                <p class="card-text">
+                    Rate:
+                    <a href="{% url 'holidays:rate' hotel.id 1 %}" class="me-2 text-decoration-none">⭐</a>
+                    <a href="{% url 'holidays:rate' hotel.id 2 %}" class="me-2 text-decoration-none">⭐</a>
+                    <a href="{% url 'holidays:rate' hotel.id 3 %}" class="me-2 text-decoration-none">⭐</a>
+                    <a href="{% url 'holidays:rate' hotel.id 4 %}" class="me-2 text-decoration-none">⭐</a>
+                    <a href="{% url 'holidays:rate' hotel.id 5 %}" class="me-2 text-decoration-none">⭐</a>
+                </p>
+                <p class="card-text">Description: {{ hotel.description }}</p>
+                <p class="card-text"><a href="{% url 'holidays:contact' hotel.id %}">Contact</a></p>
+            
+            </div>
+        </div>
+    </div>
+    <br>
 
-<img src="{{ hotel.image.url }}" alt="{{ hotel.hotel_name }}" style="width: 300px; height: 200px;"/>
-
-{% if error %}
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-<ul>
-{% for room in hotel.room_set.all %}
-    <li><a href="{% url 'holidays:book' room.id %}"><img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 300px; height: 200px;"/></a>
-        <ul>
-            <li><strong>{{ room.description }}</strong></li>
-            <li>Price: €{{ room.price }}</li>
-        </ul>
-    </li>
-{% endfor %}
-</ul>
+    <div class="container">
+            <ul>
+            {% for room in hotel.room_set.all %}
+            <div class="card-body bg-primary rounded-3 p-2">
+                <li class="list-group-item">
+                    <div class="row align-items-start">
+                        <div class="col">
+                            <a href="{% url 'holidays:book' room.id %}"><img src="{{ room.image.url }}" alt="{{ room.description }}" style="width: 300px; height: 200px;"/></a>
+                        </div>
+                        <div class="col">
+                            <br>
+                            <h5 class="card-title"><a href="{% url 'holidays:book' room.id %}">{{ room.description }}</a></h5>
+                            <br>
+                            <p class="card-text">Price: {{ room.price }}</p>
+                            <br>
+                            <p class="card-text">{{ room.number }} Rooms Avaliable</p>
+                        </div>
+                    </div>
+                </li>
+            </div>
+            <br>
+            {% endfor %}
+            </ul>
+    </div>
+</body>
+</html>

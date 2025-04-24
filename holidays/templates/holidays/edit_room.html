@@ -1,17 +1,47 @@
-<form action= "{% url 'holidays:edit_room' room.id %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>{{ room.description }}</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label for="description">Description:</label>
-        <input type="text" name="description" id="description" value="{{ room.description }}">
-        <label for="price">Price:</label>
-        <input type="number" name="price" id="price" value="{{ room.price }}">
-        <label for="image">Image:</label>
-        <input type="file" name="image" id="image" value="{{ room.image }}">
-        <label for="num">Number of Rooms:</label>
-        <input type="number" name="num" id="num" value="{{ room.number }}">
-
-    </fieldset>
-    <input type="submit" value="Update Room">
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:admin_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+    <div class="container">
+        <br>
+        <h1 class="text-center">{{ room.description }}</h1>
+        <br>
+        <form action= "{% url 'holidays:edit_room' room.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" name="description" value="{{ room.description }}">
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="price" name="price" value="{{ room.price }}">
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" id="image" name="image" value="{{ room.image }}">
+            </div>
+            <div class="mb-3">
+                <label for="num" class="form-label">Number of Rooms</label>
+                <input type="number" class="form-control" id="num" name="num" value="{{ room.number }}">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Update Room</button>
+            </form>
+        </div>
+    </body>
+    </html>
+    

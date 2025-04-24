@@ -1,21 +1,65 @@
-<form action= "{% url 'holidays:pay_booking' booking %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>Pay Booking</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label for="card_number">Credit Card Number:</label>
-        <input type="number" name="card_number" id="card_number" required>
-        <label for="expiry_date">Expiry Date:</label>
-        <input type="date" name="expiry_date" id="expiry_date" required>    
-        <label for="cvv">CVV:</label>
-        <input type="number" name="cvv" id="cvv" required>
-        <label for="cardholder_name">Cardholder Name:</label>
-        <input type="text" name="cardholder_name" id="cardholder_name" required>
-        <label for="billing_address">Billing Address:</label>
-        <input type="text" name="billing_address" id="billing_address" required>
-        <label for="mobile">Mobile:</label>
-        <input type="number" name="mobile" id="mobile" required>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+<ul class="nav bg-primary">
+    <li class="nav-item p-2 ps-5">
+    <a class="nav-link link-light" href="{% url 'holidays:index' %}">HOME</a>
+    </li>
+    {% if user %}
+    <li class="nav-item p-2 ps-5">
+    <a class="nav-link link-light" href="{% url 'holidays:profile' %}">PROFILE</a>
+    </li>
+    <li class="nav-item p-2 ps-5">
+    <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+    </li>
+    {% else %}
+    <li class="nav-item p-2 ps-5">
+    <a class="nav-link link-light" href="{% url 'holidays:login' %}">LOGIN</a>
+    </li>
+    {% endif %}
+</ul>
+<div class="container">
+    <br>
+    <h1 class="text-center">Pay Booking</h1>
+    <br>
+    <h3 class="text-center">{{ booking.room.description }} at {{ booking.room.hotel.hotel_name }}</h3>
+    <h3 class="text-center">From {{ booking.check_in }} to {{ booking.check_out }}</h3>
 
-    </fieldset>
-    <input type="submit" value="Pay Now">
-    </form>
+    <form action= "{% url 'holidays:pay_booking' booking.id %}" method="post">
+    {% csrf_token %}
+        <div class="mb-3">
+          <label for="card_number" class="form-label">Credit Card Number</label>
+          <input type="text" class="form-control" id="card_number" name="card_number" required>
+        </div>
+        <div class="mb-3">
+          <label for="expiry_date" class="form-label">Expiry Date</label>
+          <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
+        </div>
+        <div class="mb-3">
+          <label for="cvv" class="form-label">CVV</label>
+          <input type="text" class="form-control" id="cvv" name="cvv" required>
+        </div>
+        <div class="mb-3">
+          <label for="cardholder_name" class="form-label">Cardholder Name</label>
+            <input type="text" class="form-control" id="cardholder_name" name="cardholder_name" required>
+        </div>	
+        <div class="mb-3">
+          <label for="billing_address" class="form-label">Billing Address</label>
+          <input type="text" class="form-control" id="billing_address" name="billing_address" required>
+        </div>
+        <div class="mb-3">
+          <label for="mobile" class="form-label">Mobile</label>
+          <input type="text" class="form-control" id="mobile" name="mobile" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Pay Now</button>
+      </form>
+
+    </div>
+</body>
+</html>

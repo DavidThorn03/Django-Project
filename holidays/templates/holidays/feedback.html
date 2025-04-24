@@ -1,22 +1,48 @@
-<h1>{{ query.hotel.hotel_name }}</h1>
-{% if error %}
-<p><strong>{{ error }}</strong></p>
-{% endif%}
-<p>User: {{ query.user.user.user_name }}</p>
-<p>Subject: {{ query.subject }}</p>
-<p>Query: {{ query.query }}</p>
-
-<form action= "{% url 'holidays:feedback' query.id %}" method="post">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+<body>
+    <ul class="nav bg-primary">
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:staff_index' %}">HOME</a>
+        </li>
+        <li class="nav-item p-2 ps-5">
+        <a class="nav-link link-light" href="{% url 'holidays:logout_user' %}">LOGOUT</a>
+        </li>
+    </ul>
+    <br>
+<div class="container">
+    <h2>Feedback</h2>
+    <br>
+    <div class="card p-2 rounded-3" style="border: 5px solid #0d6efd;">
+    <form action= "{% url 'holidays:feedback' query.id %}" method="post">
     {% csrf_token %}
-    <fieldset>
-        <legend><h1>Feed Back</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-        <label for="feedback">Feedback</label>
-        <input type="text" name="feedback" id="feedback" required>
+    <div class="mb-3">
+        <div class="mb-3">
+        <label for="user" class="form-label"><a href="{% url 'holidays:view_client' query.user.id %}">User</a></label>
+        <input type="text" class="form-control" id="user" name="user" readonly value="{{ query.user.user.user_name }}">
+        </div>
+        <div class="mb-3">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" readonly value="{{ query.subject }}">
+        </div>
+        <div class="mb-3">
+        <label for="query" class="form-label">Query</label>
+        <input type="text" class="form-control" id="query" name="query" readonly value="{{ query.query }}">
+        </div>
+        <div class="mb-3">
+        <label for="feedback" class="form-label">Feedback</label>
+        <input type="text" class="form-control" id="feedback" name="feedback" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Feedback</button>
+    </form>
+</div>
 
-    </fieldset>
-    <input type="submit" value="Send Feedback">
-</form>
-
-
+</body>
+</html>
 
