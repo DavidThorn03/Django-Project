@@ -55,7 +55,7 @@ def book(request, room_id):
         new = Booking(user_id=user.id, room_id=room_id, check_in=check_in, check_out=check_out)
 
         if not new.valid_dates():
-            return Http404("Check-in date must be before check-out date.")
+            return render(request, 'holidays/book.html', {'room': room})
         
         new.save()
         return redirect("holidays:profile")  
@@ -83,9 +83,10 @@ def cancel_booking(request, booking_id):
 def rate(request, hotel_id, rating):
     hotel = get_object_or_404(Hotel, pk=hotel_id)
     user = request.COOKIES.get("user_id")
-    if not is_Client(user):
+    try:
+        user = get_object_or_404(Client, user=user)
+    except Http404:
         return redirect("holidays:login")
-    user = get_object_or_404(Client, user=user)
         
     try:
         Rating.objects.update_or_create(
@@ -99,13 +100,15 @@ def rate(request, hotel_id, rating):
     
 def pay_booking(request, booking_id):
     user = request.COOKIES.get("user_id")
-    if user is None:
+    if not is_Client(user):
         return redirect("holidays:login")
     
     booking = get_object_or_404(Booking, pk=booking_id)
     
     if request.method == "POST":
         # propcess user info here if payment system is used 
+        if request.POST["card_number"] == "":
+            return render(request, 'holidays/pay_booking.html', {'booking': booking})
         booking.payed = True
         booking.save()
         return redirect("holidays:profile")
@@ -119,8 +122,10 @@ def contact(request, hotel_id):
     user = request.COOKIES.get("user_id")
     if not is_Client(user):
         return redirect("holidays:login")
-    
-    user = get_object_or_404(Client, user=user)
+    try:
+        user = get_object_or_404(Client, user=user)
+    except Http404:
+        return redirect("holidays:login")
         
     if request.method == "POST":
         subject = request.POST["subject"]
@@ -245,7 +250,7 @@ def feedback(request, query_id):
     query = get_object_or_404(Query, id=query_id)
     
     if query.hotel_id != staff.hotel_id:
-        return redirect("holidays:staff_index")
+        return redirect("holidays:login")
 
     if request.method == "POST":
         feedback = request.POST["feedback"]
