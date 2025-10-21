@@ -139,20 +139,20 @@ class QueryTests(TestCase):
         staff1 = Staff(user=user4, hotel=hotel)
         staff1.save()
 
-        query1 = Query(user=client1, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 1", status=False)
+        query1 = Query(user=client1, hotel=hotel, date=date.today(), subject="Query", query="Test Query 1", status=False)
         query1.save()
-        query2 = Query(user=client2, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 2", status=False)
+        query2 = Query(user=client2, hotel=hotel, date=date.today(), subject="Query", query="Test Query 2", status=False)
         query2.save()
-        query3 = Query(user=client3, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 3", status=False)
+        query3 = Query(user=client3, hotel=hotel, date=date.today(), subject="Query", query="Test Query 3", status=False)
         query3.save()
-        query4 = Query(user=client1, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 4", status=True)
+        query4 = Query(user=client1, hotel=hotel, date=date.today(), subject="Query", query="Test Query 4", status=True)
         query4.save()
-        query5 = Query(user=client2, hotel=hotel, date=datetime.now(), subject="Query", query="Test Query 5", status=True)
+        query5 = Query(user=client2, hotel=hotel, date=date.today(), subject="Query", query="Test Query 5", status=True)
         query5.save()
 
-        feedback1 = Feedback(query=query4, feedback="Test Feedback 1", staff=staff1, date=datetime.now())
+        feedback1 = Feedback(query=query4, feedback="Test Feedback 1", staff=staff1, date=date.today())
         feedback1.save()
-        feedback2 = Feedback(query=query5, feedback="Test Feedback 2", staff=staff1, date=datetime.now())
+        feedback2 = Feedback(query=query5, feedback="Test Feedback 2", staff=staff1, date=date.today())
         feedback2.save()
 
     def test_get_queries(self):
@@ -182,7 +182,7 @@ class QueryTests(TestCase):
         self.assertEqual(queries.count(), 3)
 
         #Send feedback to the user
-        feedback = Feedback(query=queries[0], feedback="Test Feedback", staff=staff, date=datetime.now())
+        feedback = Feedback(query=queries[0], feedback="Test Feedback", staff=staff, date=date.today())
         feedback.send_feedback()
         
         #successful feedback will set status to True
