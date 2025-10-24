@@ -2,7 +2,7 @@
 
 This project was complete for the Web Framework Development module
 
-[name] is a hotel website, where users can book hotel stays
+It is a hotel website, where users can book hotel stays
 
 It consists of a Python Django website with a SQLite database and HTML/CSS views
 
